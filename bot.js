@@ -13,8 +13,7 @@ else {
 
 console.log('Bot server started in the ' + process.env.NODE_ENV + ' mode');
 
-var gebeurtenis = [{naam:"test",datum:"December 30, 2016"},{naam:"Dinnerconcert(Fiesta Latina)",datum:"November 18, 2016 20:00"},{naam:"test",datum:"Augustus 30, 2016"}];
-var repetities =["2016-10-28T20:00:00","2016-11-4T20:00:00","2016-11-11T20:00:00","2016-11-16T20:00:00","2016-11-17T20:00:00"];
+var gebeurtenis = [{naam:"test",datum:"December 30, 2016"},{naam:"Dinnerconcert(Fiesta Latina)",datum:"November 18, 2016 20:00"}];
 
 var fotos = ["https://scontent-bru2-1.xx.fbcdn.net/t31.0-8/14542391_593773814161971_3094513226974935335_o.jpg",
 "https://scontent-bru2-1.xx.fbcdn.net/t31.0-8/14608718_593773757495310_6437503985792596273_o.jpg",
@@ -129,119 +128,9 @@ gebeurtenis.sort(function(a, b){
 bot.sendMessage(message.chat.id, gebeurtenis[0].naam+' op datum: '+gebeurtenis[0].datum);
 });
 
-bot.onText(/\/Volgenderepetitie/,function(message,match){
-	var currentdate = new Date();
-
-	Date.prototype.setISO8601 = function (string) {
-    var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" +
-        "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?" +
-        "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
-    var d = string.match(new RegExp(regexp));
-
-    var offset = 0;
-    var date = new Date(d[1], 0, 1);
-
-    if (d[3]) { date.setMonth(d[3] - 1); }
-    if (d[5]) { date.setDate(d[5]); }
-    if (d[7]) { date.setHours(d[7]); }
-    if (d[8]) { date.setMinutes(d[8]); }
-    if (d[10]) { date.setSeconds(d[10]); }
-    if (d[12]) { date.setMilliseconds(Number("0." + d[12]) * 1000); }
-    if (d[14]) {
-        offset = (Number(d[16]) * 60) + Number(d[17]);
-        offset *= ((d[15] == '-') ? 1 : -1);
-    }
-
-    offset -= date.getTimezoneOffset();
-    time = (Number(date) + (offset * 60 * 1000));
-    this.setTime(Number(time));
-}
-	
-	for(var i=0;i<repetities.length;i++){
-	var datei=new Date(repetities[i]);
-	var t=new Date();
-	if(t.setISO8601(datei)<currentdate){
-		repetities.splice(i,1);
-	}
-}
-
-repetities.sort(function(a, b){
-	var dateA=new Date(a), dateB=new Date(b)
-	return dateA-dateB;
-});
-	
-var dag = new Date(repetities[0])
-var dagnaam;
-var Maandnaam;
-switch (dag.getUTCDay()) {
-    case 0:
-        dagnaam = "Zondag";
-        break;
-    case 1:
-        dagnaam = "Maandag";
-        break;
-    case 2:
-        dagnaam = "Dinsdag";
-        break;
-    case 3:
-        dagnaam = "Woensdag";
-        break;
-    case 4:
-        dagnaam = "Donderdag";
-        break;
-    case 5:
-        dagnaam = "Vrijdag";
-        break;
-    case 6:
-        dagnaam = "Zaterdag";
-}
-switch (dag.getMonth()) {
-    case 0:
-        Maandnaam = "Januari";
-        break;
-    case 1:
-        Maandnaam = "Februari";
-        break;
-    case 2:
-        Maandnaam = "Maart";
-        break;
-    case 3:
-        Maandnaam = "April";
-        break;
-    case 4:
-        Maandnaam = "Mei";
-        break;
-    case 5:
-        Maandnaam = "Juni";
-        break;
-    case 6:
-        Maandnaam = "Juli";
-		break;
-	case 7:
-        Maandnaam = "Augustus";
-		break;
-	case 8:
-        Maandnaam = "September";
-		break;
-	case 9:
-        Maandnaam = "Oktober";
-		break;
-	case 10:
-        Maandnaam = "November";
-		break;
-	case 11:
-        Maandnaam = "December";
-}
-bot.sendMessage(message.chat.id, 'De volgende repetitie is '+dagnaam+' '+dag.getDate()+' '+Maandnaam+' '+dag.getFullYear()+' om '+dag.getHours()+'u' +currentdatestring);
-});
-
 bot.onText(/\/foto/,function (msg)  {
-	
 		var x=Math.floor((Math.random() * fotos.length) );
-
-		bot.sendPhoto(msg.chat.id, photo=fotos[x]).then(function(){
-	  
-		});		
+		bot.sendPhoto(msg.chat.id, photo=fotos[x]).then(function(){});		
 });
 
 module.exports = bot;
